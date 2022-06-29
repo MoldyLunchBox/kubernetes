@@ -1,0 +1,1 @@
+prometheus_monitoring['enable'] = false\ngrafana['enable'] = false\n tee /etc/gitlab/gitlab.rb

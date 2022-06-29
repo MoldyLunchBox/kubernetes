@@ -1,0 +1,92 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$server_config = <<-SCRIPT
+
+# they should be run as sudo
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+
+# sudo echo "192.168.42.110  ayoubS" >> /etc/hosts
+
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--node-ip=192.168.42.110 --flannel-iface=eth1 --write-kubeconfig-mode=644" sh -
+
+# shouldn't be run with sudo
+
+    kubectl apply -f /vagrant/namespace.yaml
+
+    kubectl apply -f /vagrant/deployment/my_apps.yaml
+    kubectl apply -f /vagrant/service/services.yaml 
+
+    kubectl apply -f /vagrant/ingress.yaml
+
+#  sh  wait_for_pods_to_run
+
+sleep 2
+
+while (true)
+    do
+        output=$(kubectl get pods --namespace inception | awk '{ print $3 }' | awk 'NR!=1' | grep Running | wc -l)
+         
+        if [ $output == "1" ]; then
+            echo -e "\033[0;32m Pod1 is Running .....\033[0m"
+     
+        elif [ $output == "2" ]; then
+            echo -e "\033[0;32m Pod2 is Running .....\033[0m"
+     
+        elif [ $output == "3" ]; then
+            echo -e "\033[0;32m Pod3 is Running .....\033[0m"
+     
+        elif [ $output == "4" ]; then
+            echo -e "\033[0;32m Pod4 is Running .....\033[0m"
+     
+        elif [ $output == "5" ]; then
+            echo -e "\033[0;32m \nAll Pods are Ready and  Running .....\n \033[0m"
+            sleep 2
+            break
+
+        else 
+            echo -e "\033[0;31m Waiting for Pods to get Ready .....\033[0m"
+            sleep 4
+        fi
+    
+    done
+
+while (true)
+    do         
+        echo -e "\033[0;31m HTTP server fails to deliver the page .....\033[0m"
+        sleep 3
+
+        output=$(curl --connect-timeout 3 -s -o /dev/null -w '%{http_code}' 192.168.42.110)
+        if [ $output -eq 200 ]; then 
+            echo -e "\033[0;32m HTTP request was successful .....\033[0m"
+            sleep 2
+            exit 0
+        fi
+
+    done
+    
+SCRIPT
+
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "generic/centos8"
+    config.vm.synced_folder ".", "/vagrant"
+
+    config.vm.define "ayoubS" do |server|
+        server.vm.hostname = "ayoubS"
+        server.vm.network "private_network", ip: "192.168.42.110"
+        server.vm.provider :virtualbox do |v|
+            v.name = "ayoubS"
+            v.memory = 1024
+            v.cpus = 1
+        end
+        
+        # privileged (boolean) - Specifies whether to execute the shell script as
+        #  a privileged user or not (sudo). By default this is "true".
+        server.vm.provision "shell", inline: $server_config , privileged: false
+    end
+    
+end

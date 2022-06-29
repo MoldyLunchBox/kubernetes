@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$server_config = <<-SCRIPT
+
+systemctl stop firewalld
+systemctl disable firewalld
+
+sudo echo "192.168.42.110  ayoubS" >> /etc/hosts
+sudo echo "192.168.42.111  ayoubSW" >> /etc/hosts
+
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--node-ip=192.168.42.110 --flannel-iface=eth1 --write-kubeconfig-mode=644" sh -
+echo $(sudo cat /var/lib/rancher/k3s/server/node-token) > /vagrant/k3s_token
+
+SCRIPT
+
+$worker_config = <<-SCRIPT
+
+sudo echo "192.168.42.110  ayoubS" >> /etc/hosts
+sudo echo "192.168.42.111  ayoubSW" >> /etc/hosts
+
+curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" K3S_URL=https://192.168.42.110:6443 K3S_TOKEN=$(cat /vagrant/k3s_token) INSTALL_K3S_EXEC="--flannel-iface eth1" sh -s -
+
+SCRIPT
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "generic/centos8"
+    config.vm.synced_folder ".", "/vagrant"
+
+    config.vm.define "ayoubS" do |server|
+        server.vm.hostname = "ayoubS"
+        server.vm.network "private_network", ip: "192.168.42.110"
+        server.vm.provider :virtualbox do |v|
+            v.name = "ayoubS"
+            v.memory = 1024
+            v.cpus = 1
+        end
+        server.vm.provision "shell", inline: $server_config
+
+        # server.vm.post_up_message = "configuration finished , the server is runnung at 192.168.42.110"
+       
+    end
+
+    config.vm.define "ayoubSW" do |worker|
+        worker.vm.hostname = "ayoubSW"
+        worker.vm.network "private_network", ip: "192.168.42.111"
+        worker.vm.provider "virtualbox" do |v|
+            v.name = "ayoubSW"
+            v.memory = 1024
+            v.cpus = 1
+        end
+        worker.vm.provision "shell", inline: $worker_config
+    end
+    
+end
