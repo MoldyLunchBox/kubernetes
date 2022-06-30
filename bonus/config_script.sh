@@ -34,8 +34,7 @@ echo "\033[0;32m\n\n============================================================
 echo "\033[0;32m================================================================\n\n"
 
     curl  -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" >/dev/null 
-    chmod +x ./kubectl
-    sudo mv ./kubectl /usr/local/bin/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 echo "\033[0;32m\n\n================================================================\033[0m"
     echo  "\033[0;32m\t  ********* k3d install ********* \033[0m"
@@ -79,7 +78,7 @@ echo "\033[0;32m\n\n============================================================
     echo "\033[0;32m\t  ********* Create a new k3s cluster (k3s-in-docker)  ********* \033[0m"
 echo "\033[0;32m================================================================\n\n\033[0m"
 
-    sudo k3d cluster create aybourasCluster --api-port $IP:6443 -p "80:80@loadbalancer"  --k3s-arg "--no-deploy=traefik@server:*" --wait
+    sudo k3d cluster create aybourasCluster --api-port $IP:6443 -p "80:80@loadbalancer" -p 8080:80@loadbalancer --port 8443:443@loadbalancer  --port 8888:8888@loadbalancer -p  31337:31337@loadbalancer  --k3s-arg "--no-deploy=traefik@server:*" --wait
 
 # sudo k3d cluster list
 
@@ -139,7 +138,9 @@ echo "\033[0;32m================================================================
             sleep 6
 
         done
-
+         sudo kubectl get pod --namespace gitlab
+sudo /usr/local/bin/kubectl apply -f  hi.yaml 
+sudo /usr/local/bin/kubectl rollout status deployment gitlab -n gitlab
     echo "\nvisit the link: \n https://$IP:80"
     # open -a "Google Chrome" https://10.13.100.75:80
     # open -a "Firefox" https://10.13.100.75:80
