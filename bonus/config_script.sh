@@ -142,12 +142,16 @@ echo "\033[0;32m================================================================
     sudo sed -i "s/myfreakingaddress/$IP/g"  gitlab.yaml
     sudo /usr/local/bin/kubectl apply -f  gitlab.yaml 
     sudo /usr/local/bin/kubectl rollout status deployment gitlab -n gitlab
-    echo "For argocd:"
-    echo "\nvisit the link: \n https://$IP:80"
-    echo "For gitlab:"
-    echo "\nvisit the link: \n https://$IP:8888"
-    echo "\nuser: root"
-    echo "\npassword: dontbelikethat"
+    echo  "\033[0;32m For argocd: \033[0m"
+
+    echo "visit the link: https://$IP:80"
+    echo "user: admin"
+    OK=$(sudo kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}")
+    echo "password: $OK\n" 
+    echo  "\033[0;32m For gitlab: \033[0m"
+    echo "visit the link: http://$IP:8888"
+    echo "user: root"
+    echo "password: dontbelikethat"
 
     # go to gitlab and create a new repo, and copy the application files from this repo https://github.com/ayoubrs/argo2.git to the gitlab repo. 
     # navigate to the cloned repo, and add the gitlab repo url in application.yaml spec->source->repourl

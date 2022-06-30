@@ -26,7 +26,7 @@ data:
   gitlab.rb: |-
     gitlab_rails['gitlab_shell_ssh_port'] = 32222
     prometheus['monitor_kubernetes'] = false
-    external_url 'http://10.13.100.243:8888'
+    external_url 'http://myfreakingaddress:8888'
     gitlab_rails['initial_root_password'] = "dontbelikethat"
     nginx['listen_port'] = 80
     gitlab_rails['registry_enabled'] = true

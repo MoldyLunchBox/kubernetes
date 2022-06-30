@@ -1,30 +1,10 @@
+    echo  "\033[0;32m For argocd: \033[0m"
 
-
-  while (true)
-        do
-            output=$(sudo kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}") > /dev/null 2>&1
-            len=${#output}
-            
-            if [ $len -eq 24 ]; then 
-                echo "agroCD password is: "
-                sudo kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-                exit 0
-            fi
-
-            echo "\033[0;31m waiting for argoCD to get ready .....\033[0m"
-            sleep 4
-
-        done
-
-
-
-
-
-
-
-
-#  open -a "Firefox" https://192.168.42.112:80
-
-
-
-
+    echo "visit the link: https://$IP:80"
+    echo "user: admin"
+    OK=$(sudo kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}")
+    echo "password: $OK\n" 
+    echo  "\033[0;32m For gitlab: \033[0m"
+    echo "visit the link: http://$IP:8888"
+    echo "user: root"
+    echo "password: dontbelikethat"
