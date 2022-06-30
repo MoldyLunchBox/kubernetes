@@ -138,9 +138,17 @@ echo "\033[0;32m================================================================
             sleep 6
 
         done
-         sudo kubectl get pod --namespace gitlab
-sudo /usr/local/bin/kubectl apply -f  hi.yaml 
-sudo /usr/local/bin/kubectl rollout status deployment gitlab -n gitlab
+    sudo kubectl create namespace  gitlab
+    sudo sed -i "s/myfreakingaddress/$IP/g"  gitlab.yaml
+    sudo /usr/local/bin/kubectl apply -f  gitlab.yaml 
+    sudo /usr/local/bin/kubectl rollout status deployment gitlab -n gitlab
+    echo "For argocd:"
     echo "\nvisit the link: \n https://$IP:80"
+    echo "For gitlab:"
+    echo "\nvisit the link: \n https://$IP:8888"
+    echo "\nuser: root"
+    echo "\npassword: dontbelikethat"
+
+
     # open -a "Google Chrome" https://10.13.100.75:80
     # open -a "Firefox" https://10.13.100.75:80
