@@ -149,6 +149,10 @@ echo "\033[0;32m================================================================
     echo "\nuser: root"
     echo "\npassword: dontbelikethat"
 
+    # go to gitlab and create a new repo, and copy the application files from this repo https://github.com/ayoubrs/argo2.git to the gitlab repo. 
+    # navigate to the cloned repo, and add the gitlab repo url in application.yaml spec->source->repourl
+    # then execute this command 
+    # sudo kubectl  apply -f application.yaml
 
     # open -a "Google Chrome" https://10.13.100.75:80
     # open -a "Firefox" https://10.13.100.75:80
