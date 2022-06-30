@@ -90,3 +90,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     
 end
+
+
+#curl --header "Host: app2.com" --silent 192.168.42.110 | grep "from"

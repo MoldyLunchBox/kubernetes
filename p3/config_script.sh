@@ -1,4 +1,4 @@
-IP=hostname -I
+IP=$(hostname -I | awk '{print $1}')
 
 echo "\n\n================================================================"
     echo  "\033[0;32m\t ********* Docker remove ********* 033[0m"
@@ -113,9 +113,6 @@ echo "\033[0;32m================================================================
 
     # scp -r -p /Users/aybouras/Desktop/kuber aybouras@10.13.100.75:/home/aybouras/kuber
 
-    # sudo kubectl  apply -f $HOME/kuber/p3/cluster_synced_repo/playground/application.yaml --wait
-    # sudo kubectl  apply -f $HOME/kuber/p3/cluster_synced_repo/playground/dev/deployment.yaml --namespace dev --wait
-    # sudo kubectl  apply -f $HOME/kuber/p3/cluster_synced_repo/playground/dev/service.yaml --namespace dev --wait
 
     sudo kubectl  apply -f $HOME/kuber/p3/cluster_synced_repo/application.yaml --wait
     sudo kubectl  apply -f $HOME/kuber/p3/cluster_synced_repo/dev/deployment.yaml --namespace dev --wait

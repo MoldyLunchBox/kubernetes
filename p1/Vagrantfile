@@ -55,3 +55,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     
 end
+#kubectl get nodes -o wide
